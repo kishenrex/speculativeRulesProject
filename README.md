@@ -9,6 +9,8 @@ The core objective is to reduce page load times to near-zero by preloading pages
 
 ## Technical Architecture
 
+I implemented this project on an Apache server which can be accessed at https://kishen.site/. 
+
 The project operates on a loop between the client interface and a behavioral analytics engine:
 
 1.  **Signal Collection:** A client-side JavaScript script monitors user interactions (mouse movement, scroll velocity, click patterns).
