@@ -56,6 +56,5 @@ The project operates on a loop between the client interface and a behavioral ana
 
 ## Future Roadmap
 * **Device-Aware Preloading:** Adjusting prefetch aggression based on the user's current battery life and connection type (e.g., 4G vs. Wi-Fi).
-* **A/B Testing Framework:** Building a dashboard to compare the conversion rates and load times of "Speculative" sessions vs. "Standard" sessions.
 * **Payload Buffering:** Buffer the payload to local storage first before sending, so that if user closes tab or goes offline, the data can still be sent later. 
 * **Send data immediately after idle ends:** After waking from idle, send telemetry with how long it was idle for, then go back to regular polling. Shows behavior and long tab use etc.
