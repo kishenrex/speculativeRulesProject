@@ -1,7 +1,7 @@
 # Speculative Rules API: Predictive Performance & Behavioral Analytics
 
 ## Project Overview
-The **Speculative Rules API Project** aims to improve web performance by moving beyond static prefetching to a dynamic, intent-based model. By leveraging the modern [Speculation Rules API](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API), this project builds an intelligent layer that predicts which pages a user is likely to visit next based on real-time behavioral signals.
+The **Speculative Rules API Project** aims to improve web performance by moving beyond static prefetching to a dynamic, intent-based model. By leveraging the modern [Speculation Rules API](https://developer.mozilla.org/en-US/docs/Web/API/Speculation_Rules_API), this project builds an intelligent layer that predicts which pages a user is likely to visit next based on real-time behavioral signals. We can create different personas for users and assign different preloading levels to them. For example, a recruiter may be interested in going to the Resume or Experience page after visiting the homepage, so it may make sense to speculatively preload those pages for them.
 
 The core objective is to reduce page load times to near-zero by preloading pages before the user even clicks a link, while also managing resource overhead to ensure that data is not wasted on unlikely transitions.
 
