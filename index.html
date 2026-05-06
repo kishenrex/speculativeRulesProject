@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="view-transition" content="same-origin">
+    <title>Kishen's Homepage</title>
+    <!-- <script>
+        // Define the mobile breakpoint
+        const isMobile = window.innerWidth <= 768;
+        
+        // Select the eagerness based on the viewport
+        const eagernessLevel = isMobile ? "eager" : "moderate";
+        
+        console.log(`Viewport width: ${window.innerWidth}px. Setting Speculation Rule eagerness to: ${eagernessLevel}`);
+    
+        // Construct the Speculation Rule JSON
+        const specRule = {
+            "prerender": [
+                {
+                    "source": "document",
+                    "where": {"href_matches": "/target-page.html"},
+                    "eagerness": eagernessLevel
+                }
+            ]
+        };
+    
+        // Inject the rule into the DOM
+        const scriptTag = document.createElement('script');
+        scriptTag.type = 'speculationrules';
+        scriptTag.textContent = JSON.stringify(specRule);
+        document.head.appendChild(scriptTag);
+    </script> -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="icon" href="/assets/images/favicon.ico">
+    <script src="assets/scripts/theme-blocker.js"></script>
+    <script src="assets/scripts/ProjectCard.js" defer></script>
+    <script src="/assets/scripts/telemetry-sender.js" defer></script>
+    <script src="/assets/scripts/speculation-injector.js" defer></script>
+</head>
+<body>
+    <button id="theme-picker-btn">Customize Theme</button>
+
+    <dialog id="theme-dialog">
+        <form method="dialog">
+            <fieldset class="preset-themes">
+                <legend>Preset Themes</legend>
+                <label>
+                    <input type="radio" name="theme" value="light"> Light
+                </label>
+                <label>
+                    <input type="radio" name="theme" value="dark"> Dark
+                </label>
+                <label>
+                    <input type="radio" name="theme" value="sepia"> Sepia
+                </label>
+            </fieldset>
+
+            <fieldset class="custom-controls">
+                <legend>Customize</legend>
+                <label for="custom-bg">Background:</label>
+                <input type="color" id="custom-bg" value="#ffffff">
+
+                <label for="custom-text">Text:</label>
+                <input type="color" id="custom-text" value="#212529">
+
+                <label for="custom-font">Font:</label>
+                <select id="custom-font">
+                    <option value="default">Default (Serif Headings)</option>
+                    <option value="sans-serif">Modern (Sans-Serif)</option>
+                </select>
+            </fieldset>
+
+            <div class="dialog-actions">
+                <button type="button" id="apply-custom">Apply Custom</button>
+                <button type="button" id="reset-custom">Reset</button>
+                <button type="submit" id="close-dialog">Close</button>
+            </div>
+        </form>
+    </dialog>
+    <noscript>
+        <p style="text-align: center; color: #d9534f; font-weight: 600;">
+            Note: Theme toggling requires JavaScript to be enabled.
+        </p>
+    </noscript>
+
+    <script src="assets/scripts/theme-toggle.js"></script>
+    
+    <!-- <script src="./framework.dict"></script> -->
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="./index.html"><i>Homepage</i></a></li>
+                <li><a href="./about.html">About Me</a></li>
+                <li><a href="./projects.html">Projects</a></li>
+                <li><a href="./experience.html">Experience</a></li>
+                <li><a href="./resume.html">Resume</a></li>
+                <li><a href="./contact.html">Contact Me</a></li>
+                <li><a href="./target-page.html">Testing Page</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section>
+            <h1>Kishen Thevandran</h1>
+            <h2>Software Engineer</h2>
+            <picture>
+                <source 
+                  srcset="/assets/images/prof_pic_webp_50.webp 1368w, /assets/images/prof_pic_webp.webp 2736w"
+                  sizes="(max-width: 600px) 150px, 250px"
+                  type="image/webp">
+                
+                <source
+                  srcset="/assets/images/profile_pic_50.jpg 1368w, /assets/images/profile_pic.jpg 2736w"
+                  sizes="(max-width: 600px) 150px, 250px"
+                  type="image/jpeg">
+                  
+                <img 
+                  src="assets/images/profile_pic.jpg" 
+                  alt="Kishen's profile picture"
+                  width="250"
+                  height="300">
+            </picture>
+            
+        </section>
+        <section>
+            <h2>Brief Summary:</h2>
+            <p>I am a 4th year Computer Science major at UC San Diego. My interests are in web technologies</p>
+        </section>
+        <section class="projects-section">
+            <h2>Featured Projects</h2>
+            <div class="button-container">
+              <button id="load-local-btn">Load Local</button>
+              <button id="load-remote-btn">Load Remote</button>
+            </div>
+            <div id="project-card-container" class="card-grid"></div>
+        </section>
+    </main>
+
+    <template id="project-card-template">
+        <link rel="stylesheet" href="/assets/css/ProjectCard.css">
+        <article class="card">
+            <picture>
+                <img class="card__image" src="" alt="">
+            </picture>
+            <div class="card__content">
+                <h2 class="card__title"></h2>
+                <p class="card__description"></p>
+                <a href="#" class="card__link" target="_blank" rel="noopener noreferrer">Learn More &rarr;</a>
+            </div>
+        </article>
+    </template>
+
+    <footer>
+        <p>&copy; 2025 Kishen Thevandran</p>
+        <div>
+            <a href="https://github.com/kishenrex">Github</a>
+            <a href="https://www.linkedin.com/in/kishen-thevandran-441424251">LinkedIn</a>
+        </div>
+    </footer>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered with scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.error('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
