@@ -39,6 +39,56 @@
     <script src="/assets/scripts/speculation-injector.js" defer></script>
 </head>
 <body>
+    
+    <button id="performance-picker-btn" aria-label="Speed Settings" title="Speed Settings">
+        ⚡
+    </button>
+
+    <!-- The Performance Dialog -->
+    <dialog id="performance-dialog">
+        <form method="dialog">
+            <h2 style="margin-top: 0;">Speed Optimization</h2>
+            <p style="font-size: 0.9em; color: #555; line-height: 1.4;">
+                This website analyzes your browsing behavior in real-time to predict your next move, pre-loading pages before you even click them.
+            </p>
+            
+            <fieldset class="perf-controls">
+                <legend>Speculative Loading</legend>
+                <div class="toggle-container">
+                    <label class="switch">
+                        <input type="checkbox" id="prerender-toggle" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <span id="prerender-status-text">Enabled</span>
+                </div>
+            </fieldset>
+
+            <div style="font-size: 0.85em; color: #444; background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e9ecef;">
+                <strong style="color: #333;">🔍 Under the Hood:</strong>
+                <ul style="margin: 8px 0 0 0; padding-left: 20px; line-height: 1.5;">
+                    <li>Frontend telemetry tracks your clicks and scrolling.</li>
+                    <li>A PHP backend assigns you a "persona" (e.g., Reader, Recruiter).</li>
+                    <li>The Speculation Rules API dynamically prerenders your predicted next pages in a hidden background tab.</li>
+                </ul>
+            </div>
+
+            <div style="font-size: 0.9em; border-left: 4px solid #28a745; padding-left: 12px; margin-bottom: 20px;">
+                <strong style="color: #333;">🧪 See it in action:</strong>
+                <ol style="margin: 8px 0 0 0; padding-left: 20px; line-height: 1.5; color: #555;">
+                    <li>Leave the toggle <strong>Enabled</strong> and close this menu.</li>
+                    <li>Click the <strong>Testing Page</strong> link in the main navigation.</li>
+                    <li>Check the load time metrics on that page.</li>
+                    <li>Come back, disable the toggle, and try it again!</li>
+                </ol>
+            </div>
+
+            <div class="dialog-actions">
+                <button type="submit" id="close-perf-dialog">Close</button>
+            </div>
+        </form>
+    </dialog>
+
+    
     <button id="theme-picker-btn">Customize Theme</button>
 
     <dialog id="theme-dialog">
