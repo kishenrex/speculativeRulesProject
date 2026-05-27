@@ -4,103 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zero-Latency Quest</title>
+    
     <script src="/assets/scripts/telemetry-sender.js" defer></script>
-    <script>
-        // Artificial CPU Stress Test
-        const startStress = performance.now();
-        let result = 0;
-        // Tweak this number to make it more/less intensive
-        for (let i = 0; i < 50000000; i++) { 
-            result += Math.sqrt(i) * Math.random();
-        }
-        const endStress = performance.now();
-        console.log(`CPU Blocking Task took: ${(endStress - startStress).toFixed(1)} ms`);
-    </script>
+    
+    <script type="module" src="https://unpkg.com/template-for-polyfill@latest/dist/template-for-polyfill.js"></script>
+
     <style>
-        body { font-family: system-ui, sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; transition: background-color 0.3s ease; }
+        body { font-family: system-ui, sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; }
         
-        /* The Metrics Dashboard Styling */
-        #metrics-panel {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 8px;
-            background: #f0f0f0;
-            border: 2px solid #ccc;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+        /* The Metrics Dashboard Styling (Untouched) */
+        #metrics-panel { margin-top: 30px; padding: 20px; border-radius: 8px; background: #f0f0f0; border: 2px solid #ccc; }
         .metric-value { font-size: 1.5em; font-weight: bold; color: #0056b3; }
         .success-mode { border-color: #28a745 !important; background: #e6ffe6 !important; }
         .standard-mode { border-color: #ffc107 !important; background: #fff8e1 !important; }
-        body { font-family: sans-serif; }
+        
+        .hollow-shell { margin-top: 20px; padding: 20px; border: 2px dashed #ccc; border-radius: 8px; text-align: center; color: #777; }
     </style>
 </head>
 <body>
     <h1>The Target Page</h1>
-    <p>This is the destination page. Below, you will see exactly how fast it loaded.</p>
     <a href="/index.html">⬅ Go Back to Origin</a>
 
     <div id="metrics-panel">
         <h3>📊 Calculating Load Metrics...</h3>
     </div>
 
+    <div id="heavy-content-container" class="hollow-shell">
+        <p>Waiting for activation to load heavy metrics...</p>
+    </div>
+
     <script>
+        // --- 1. The Declarative Patch Fetcher ---
+        async function fetchDeclarativePatch() {
+            const res = await fetch('/api/target-patch.php');
+            const htmlPatch = await res.text();
+            
+            const sandbox = document.createElement('div');
+            sandbox.style.display = 'none';
+            document.body.appendChild(sandbox);
+            
+            if (sandbox.setHTML) sandbox.setHTML(htmlPatch);
+            else sandbox.innerHTML = htmlPatch;
+            
+            setTimeout(() => sandbox.remove(), 100);
+        }
+
+        // --- 2. The Original Metrics Logic ---
         function displayMetrics() {
-            // Grab the most recent navigation timing data
             const navEntry = performance.getEntriesByType("navigation")[0];
             const panel = document.getElementById('metrics-panel');
             let displayHTML = "";
 
-            // If activationStart is greater than 0, the page was prerendered!
             if (navEntry.activationStart > 0) {
-                // Perceived time: DOM completion minus the moment the user clicked
                 const perceivedLatency = Math.max(0, navEntry.domComplete - navEntry.activationStart);
-                // Background time: Total time the browser spent fetching/rendering silently
-                const backgroundWorkTime = navEntry.domComplete;
-
                 panel.classList.add('success-mode');
                 displayHTML = `
                     <h3>Speculative Prerender Successful</h3>
                     <p><strong>Perceived Load Time (to User):</strong> <span class="metric-value">${perceivedLatency.toFixed(1)} ms</span></p>
-                    <hr>
-                    <p><small><strong>Under-the-Hood Metrics:</strong></small></p>
-                    <p><small>Browser background rendering time: ${backgroundWorkTime.toFixed(1)} ms</small></p>
-                    <p><small>Time spent waiting in background before click: ${navEntry.activationStart.toFixed(1)} ms</small></p>
+                    <p><small>Chrome background rendering time: ${navEntry.domComplete.toFixed(1)} ms</small></p>
                 `;
-                
-                // Flash the background to give a visual cue
-                document.body.style.backgroundColor = "#f2fff2";
-                setTimeout(() => document.body.style.backgroundColor = "transparent", 500);
-
             } else {
-                // Standard Network Fetch (No speculation occurred)
-                const totalLoadTime = navEntry.domComplete;
-                
                 panel.classList.add('standard-mode');
                 displayHTML = `
                     <h3>Standard Network Fetch</h3>
-                    <p><strong>Actual Load Time:</strong> <span class="metric-value">${totalLoadTime.toFixed(1)} ms</span></p>
-                    <hr>
-                    <p><small>No speculative prerendering was detected for this navigation.</small></p>
+                    <p><strong>Actual Load Time:</strong> <span class="metric-value">${navEntry.domComplete.toFixed(1)} ms</span></p>
                 `;
             }
-
             panel.innerHTML = displayHTML;
         }
 
-        // THE LIFECYCLE LOGIC
+        // --- 3. The Grand Central Lifecycle Manager ---
         if (document.prerendering) {
-            console.log("Page is hidden and prerendering...");
-            // Wait until the user clicks and the page activates to calculate metrics
+            console.log("1. Background prerendering started. Shell loaded.");
+            
+            // Wait for the user to actually click!
             document.addEventListener('prerenderingchange', () => {
-                console.log("Page activated! Calculating metrics.");
-                // Use a tiny timeout to ensure the browser has finished painting the final frame
+                console.log("2. Page activated! Firing metrics and fetching heavy data.");
+                
+                // Show the blazing fast metrics
                 setTimeout(displayMetrics, 50); 
+                
+                // Safely fetch the heavy data now that Chrome won't kill the tab
+                fetchDeclarativePatch();
             });
         } else {
             console.log("Standard load detected.");
-            // Wait for the window load event to ensure domComplete is finalized
             window.addEventListener('load', () => {
                 setTimeout(displayMetrics, 50);
+                fetchDeclarativePatch();
             });
         }
     </script>
